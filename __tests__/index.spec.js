@@ -6,25 +6,25 @@ const dopar = require("../index");
 jest.setTimeout(300000);
 expect.extend({ toMatchProperty });
 
-const delay = t =>
-  new Promise(resolve => {
-    setTimeout(() => {
-      resolve();
-    }, t);
-  });
+const delay = t => new Promise(resolve => setTimeout(resolve, t));
 
-const round = (x, n) => Math.round(n / x) * x;
+let $roundedNow = Date.now()
 
-const t = 300;
+const roundedNow = (d) => {
+  const now = Date.now()
+  if (now - $roundedNow > d) $roundedNow = now
+  return $roundedNow
+}
 
 const createPromise = value => async () => {
-  const start = Date.now();
+  const t = 10
+  const start = roundedNow(t / 2)
   await delay(t);
   return { start, value };
 };
 
 const groupValuesByRoudedStart = R.pipe(
-  R.groupBy(({ start }) => round(t, start)),
+  R.groupBy(({ start }) => start),
   R.values,
   R.sortBy(([{ start }]) => start),
   R.map(R.map(({ value }) => value))
@@ -36,9 +36,9 @@ test("n has to be > 0", () => {
 
 test("dopar", async () => {
   const opts = {
-    count: 100
+    count: 500
   };
-  const n = gen.choose(1, 10);
+  const n = gen.choose(1, 100);
   const input = gen.array(gen.uint);
 
   await expect(gen.tuple(n, input)).toMatchProperty(async ([n, input]) => {

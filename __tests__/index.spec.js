@@ -1,7 +1,7 @@
 const R = require("ramda");
 const { forAll, gen } = require("rapid-check");
 const toMatchProperty = require("rapid-check/src/jest.matcher");
-const pmap = require("../index");
+const dopar = require("../index");
 
 jest.setTimeout(300000);
 expect.extend({ toMatchProperty });
@@ -13,7 +13,7 @@ const delay = t =>
     }, t);
   });
 
-const roundTo = (x, n) => Math.round(n / x) * x;
+const round = (x, n) => Math.round(n / x) * x;
 
 const t = 300;
 
@@ -23,18 +23,18 @@ const createPromise = value => async () => {
   return { start, value };
 };
 
-const groupedValuesByStart = R.pipe(
-  R.groupBy(({ start }) => roundTo(t, start)),
+const groupValuesByRoudedStart = R.pipe(
+  R.groupBy(({ start }) => round(t, start)),
   R.values,
   R.sortBy(([{ start }]) => start),
   R.map(R.map(({ value }) => value))
 );
 
 test("n has to be > 0", () => {
-  expect(() => pmap(0, [])).toThrowError("n has to be greater or equal to 1");
+  expect(() => dopar(0, [])).toThrowError("n has to be greater or equal to 1");
 });
 
-test("pmap", async () => {
+test("dopar", async () => {
   const opts = {
     count: 100
   };
@@ -42,9 +42,9 @@ test("pmap", async () => {
   const input = gen.array(gen.uint);
 
   await expect(gen.tuple(n, input)).toMatchProperty(async ([n, input]) => {
-    const result = await pmap(n, R.map(createPromise, input));
+    const result = await dopar(n, R.map(createPromise, input));
     const expected = R.splitEvery(n, input);
-    const actual = groupedValuesByStart(result);
+    const actual = groupValuesByRoudedStart(result);
     return R.equals(expected, actual);
   }, opts);
 });

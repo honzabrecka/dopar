@@ -1,4 +1,13 @@
 {
+  "name": "dopar",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:honzabrecka/dopar.git"
+  },
+  "author": "jan.brecka@gmail.com",
+  "license": "MIT",
   "devDependencies": {
     "jest": "^24.7.1",
     "ramda": "^0.26.1",

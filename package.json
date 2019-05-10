@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "jest": "^24.7.1",
+    "ramda": "^0.26.1",
+    "rapid-check": "^0.3.0"
+  }
+}

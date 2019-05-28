@@ -16,4 +16,17 @@ function dopar(n, promises) {
   return $dopar(n, promises, []);
 }
 
+function FakeConcat() {}
+
+FakeConcat.prototype.concat = function() {
+  return this;
+};
+
+const alwaysUndefined = () => undefined;
+
+dopar.forEach = function(n, promises) {
+  if (n < 1) throw new Error("n has to be greater or equal to 1");
+  return $dopar(n, promises, new FakeConcat()).then(alwaysUndefined);
+};
+
 module.exports = dopar;

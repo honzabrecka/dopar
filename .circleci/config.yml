@@ -1,0 +1,10 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: node:10
+    working_directory: ~/w
+    steps:
+      - checkout
+      - run: yarn install
+      - run: yarn jest

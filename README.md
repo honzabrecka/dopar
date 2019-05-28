@@ -14,9 +14,13 @@ yarn install dopar
 import dopar from 'dopar'
 
 const lazyPromises = [
-  () => delay(1000),
-  () => delay(1000),
+  () => oneSecondDelay(),
+  () => oneSecondDelay(),
+  () => oneSecondDelay(),
 ]
 
-dopar(3, lazyPromises) // resolves after +-1 second instead of 2 seconds
+dopar(3, lazyPromises) // resolves after +-1 second instead of 3 seconds
+dopar.forEach(3, lazyPromises) // resolves after +-1 second instead of 3 seconds
 ```
+
+The difference between `dopar` and `dopar.forEach` is that the latter does not store any result in memory.
